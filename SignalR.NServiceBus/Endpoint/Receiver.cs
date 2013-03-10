@@ -18,8 +18,10 @@ namespace SignalR.NServiceBus.Endpoint
         {
             var messages = JsonConvert.DeserializeObject<Message[]>(message.Payload);
 
-            // TODO: how to determine the ID??
-            SignalRMessageBus.OnReceived(message.PayloadId, messages);
+            if (SignalRMessageBus != null)
+            {
+                SignalRMessageBus.OnReceived(message.PayloadId, messages);
+            }
         }
     }
 }
