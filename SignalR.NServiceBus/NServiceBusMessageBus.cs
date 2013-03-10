@@ -13,6 +13,9 @@ using Microsoft.AspNet.SignalR.Infrastructure;
 
 namespace SignalR.NServiceBus
 {
+    /// <summary>
+    /// The SignalR messagebus that uses NServiceBus as a backplane.
+    /// </summary>
     public class NServiceBusMessageBus : ScaleoutMessageBus
     {
         internal static IBus Bus;

@@ -7,6 +7,9 @@ using NServiceBus;
 
 namespace Microsoft.AspNet.SignalR
 {
+    /// <summary>
+    /// Extension method for configuring SignalR.
+    /// </summary>
     public static class DependencyResolverExtensions
     {
         /// <summary>

@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace SignalR.NServiceBus.Endpoint
 {
+    /// <summary>
+    /// This handler will receive messages from the backplane and hand them off to SignalR.
+    /// </summary>
     public class Receiver: IHandleMessages<MessagesAvailable>
     {
         public NServiceBusMessageBus SignalRMessageBus { get; set; }
