@@ -27,6 +27,24 @@ In Global.asax.cs:
             // other initialization
       }
 
+Also, make sure that you have configured the endpoint of the backplane in the config of your SignalR host:
+
+        <configuration>
+          <configSections>
+            <section name="UnicastBusConfig" type="NServiceBus.Config.UnicastBusConfig, NServiceBus.Core" />
+            <section name="MessageForwardingInCaseOfFaultConfig" type="NServiceBus.Config.MessageForwardingInCaseOfFaultConfig, NServiceBus.Core" />
+          </configSections>
+          <UnicastBusConfig>
+            <MessageEndpointMappings>
+              <!-- the endpoint on which the backplane is listening for commands -->
+              <!-- SignalR will subscribe to new messages via that endpoint -->
+              <add Messages="SignalR.NServiceBus" Endpoint="backplanequeue@someserver" />
+            </MessageEndpointMappings>
+          </UnicastBusConfig>
+        
+          <MessageForwardingInCaseOfFaultConfig ErrorQueue="error" />
+        </configuration>
+
 To run the backplane itself, just start this project (it uses the NServiceBus generic host).
 
 Author
