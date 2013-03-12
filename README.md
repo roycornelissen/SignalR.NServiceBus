@@ -50,3 +50,5 @@ To run the backplane itself, just start this project (it uses the NServiceBus ge
 Author
 ======
 [Roy Cornelissen](http://about.me/roycornelissen)
+
+For more info, see my [blogpost](http://roycornelissen.wordpress.com/2013/03/11/an-nservicebus-backplane-for-signalr/)
