@@ -19,27 +19,30 @@ namespace SignalR.NServiceBus
     public class NServiceBusMessageBus : ScaleoutMessageBus
     {
         internal static IBus Bus;
-        private readonly TaskQueue _publishQueue = new TaskQueue();
 
-        public NServiceBusMessageBus(IDependencyResolver resolver, IBus busInstance)
-            : base(resolver)
+        public NServiceBusMessageBus(IDependencyResolver resolver, IBus busInstance, ScaleoutConfiguration configuration)
+            : base(resolver, configuration)
         {
             Bus = busInstance;
             Configure.Instance.Configurer.ConfigureComponent<Receiver>(DependencyLifecycle.InstancePerCall)
                 .ConfigureProperty((r) => r.SignalRMessageBus, this);
+
+            // By default, there is only 1 stream in this NServiceBus backplane, and we'll open it here
+            Open(0);
         }
 
-        internal void OnReceived(ulong id, Message[] messages)
-        {
-            _publishQueue.Enqueue(() => OnReceived("SignalR.NServiceBus", id, messages));
-        }
-
-        protected override Task Send(IList<Message> messages)
+        protected override Task Send(int streamIndex, IList<Message> messages)
         {
             return Task.Factory.StartNew(() =>
                 {
-                    Bus.Send<DistributeMessages>(m => m.Payload = JsonConvert.SerializeObject(messages.ToArray()));
+                    ScaleoutMessage msg = new ScaleoutMessage(messages);
+                    Bus.Send<DistributeMessages>(m => { m.Payload = msg.ToBytes(); m.StreamIndex = streamIndex; });
                 });
+        }
+
+        new internal void OnReceived(int streamIndex, ulong id, ScaleoutMessage messages)
+        {
+            base.OnReceived(streamIndex, id, messages);
         }
     }
 }

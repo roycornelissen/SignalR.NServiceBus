@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Diagnostics;
 
 namespace SignalR.NServiceBus.Backplane
 {
@@ -21,7 +22,8 @@ namespace SignalR.NServiceBus.Backplane
 
         public void Handle(DistributeMessages message)
         {
-            var evt = new MessagesAvailable() { Payload = message.Payload };
+            var evt = new MessagesAvailable() { Payload = message.Payload, StreamIndex = message.StreamIndex };
+
             lock (_lockHandle)
             {
                 _payloadId++;

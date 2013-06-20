@@ -13,6 +13,11 @@ namespace SignalR.NServiceBus.Messages
     public class MessagesAvailable: IEvent
     {
         /// <summary>
+        /// Stream Index Id
+        /// </summary>
+        public int StreamIndex { get; set; }
+
+        /// <summary>
         /// Unique payload Id
         /// </summary>
         public ulong PayloadId { get; set; }
@@ -20,6 +25,6 @@ namespace SignalR.NServiceBus.Messages
         /// <summary>
         /// Serialized IList of Messages
         /// </summary>
-        public string Payload { get; set; }
+        public byte[] Payload { get; set; }
     }
 }

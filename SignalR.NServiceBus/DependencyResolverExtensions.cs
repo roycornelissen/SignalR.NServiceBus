@@ -17,10 +17,11 @@ namespace Microsoft.AspNet.SignalR
         /// </summary>
         /// <param name="resolver">The dependency resolver.</param>
         /// <param name="busInstance">The instance of the NServiceBus IBus instance inside the current host.</param>
+        /// <param name="configuration">Scaleout configuration parameters to be used by SignalR.</param>
         /// <returns>The dependency resolver.</returns>
-        public static IDependencyResolver UseNServiceBus(this IDependencyResolver resolver, IBus busInstance)
+        public static IDependencyResolver UseNServiceBus(this IDependencyResolver resolver, IBus busInstance, ScaleoutConfiguration configuration)
         {
-            var bus = new Lazy<NServiceBusMessageBus>(() => new NServiceBusMessageBus(resolver, busInstance));
+            var bus = new Lazy<NServiceBusMessageBus>(() => new NServiceBusMessageBus(resolver, busInstance, configuration));
             resolver.Register(typeof(IMessageBus), () => bus.Value);
             return resolver;
         }

@@ -20,7 +20,8 @@ In Global.asax.cs:
                         .CreateBus()
                         .Start();
 
-            GlobalHost.DependencyResolver.UseNServiceBus(Bus);
+			var config = new ScaleoutConfiguration() { MaxQueueLength = 100 }; // Or whatever you want
+            GlobalHost.DependencyResolver.UseNServiceBus(Bus, config);
 
             RouteTable.Routes.MapHubs();
             

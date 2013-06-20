@@ -13,8 +13,13 @@ namespace SignalR.NServiceBus.Messages
     public class DistributeMessages: ICommand
     {
         /// <summary>
+        /// The Stream Index Id.
+        /// </summary>
+        public int StreamIndex { get; set; }
+
+        /// <summary>
         /// The payload consisting of a serialized IList of SignalR messages.
         /// </summary>
-        public string Payload { get; set; }
+        public byte[] Payload { get; set; }
     }
 }

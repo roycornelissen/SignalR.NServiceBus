@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace SignalR.NServiceBus.Endpoint
 {
@@ -19,11 +20,11 @@ namespace SignalR.NServiceBus.Endpoint
 
         public void Handle(MessagesAvailable message)
         {
-            var messages = JsonConvert.DeserializeObject<Message[]>(message.Payload);
+            var messages = ScaleoutMessage.FromBytes(message.Payload);
 
             if (SignalRMessageBus != null)
             {
-                SignalRMessageBus.OnReceived(message.PayloadId, messages);
+                SignalRMessageBus.OnReceived(message.StreamIndex, message.PayloadId, messages);
             }
         }
     }
