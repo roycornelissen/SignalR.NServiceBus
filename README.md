@@ -5,29 +5,39 @@ NServiceBus backplane for SignalR
 
 To use this backplane in a SignalR host, add a reference to SignalR.NServiceBus, initialize an IBus and configure SignalR to use NServiceBus. In ASP.NET, this would look something like this:
 
-In Global.asax.cs:
+In Startup.cs:
 
-        public static IBus Bus { get; set; }
+		using Microsoft.AspNet.SignalR;
+		using Microsoft.AspNet.SignalR.Messaging;
+		using NServiceBus;
+		using Owin;
 
-        protected void Application_Start()
-        {
-            Bus = Configure
-                .With()
-                    .DefaultBuilder()
-                    .MsmqTransport()
-                    .UnicastBus()
-                        .LoadMessageHandlers()
-                        .CreateBus()
-                        .Start();
+		namespace DemoWebApp
+		{
+			public class Startup
+			{
+				public IBus Bus;
 
-			var config = new ScaleoutConfiguration() { MaxQueueLength = 100 }; // Or whatever you want
-            GlobalHost.DependencyResolver.UseNServiceBus(Bus, config);
+				public void Configuration(IAppBuilder app)
+				{
+					// Any connection or hub wire up and configuration should go here
+					app.MapSignalR();
 
-            RouteTable.Routes.MapHubs();
-            
-            // other initialization
-      }
+					Bus = Configure
+						.With()
+						.DefaultBuilder()
+						.UseTransport<Msmq>()
+						.UnicastBus()
+						.LoadMessageHandlers()
+						.CreateBus()
+						.Start();
 
+					var config = new ScaleoutConfiguration() { MaxQueueLength = 100 }; // Or whatever you want
+					GlobalHost.DependencyResolver.UseNServiceBus(Bus, config);
+				}
+			}
+		}
+	
 Also, make sure that you have configured the endpoint of the backplane in the config of your SignalR host:
 
         <configuration>
@@ -39,7 +49,7 @@ Also, make sure that you have configured the endpoint of the backplane in the co
             <MessageEndpointMappings>
               <!-- the endpoint on which the backplane is listening for commands -->
               <!-- SignalR will subscribe to new messages via that endpoint -->
-              <add Messages="SignalR.NServiceBus" Endpoint="backplanequeue@someserver" />
+              <add Messages="SignalR.NServiceBus" Endpoint="signalr.nservicebus.backplane" />
             </MessageEndpointMappings>
           </UnicastBusConfig>
         
