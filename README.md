@@ -38,6 +38,7 @@ In Startup.cs:
 			}
 		}
 	
+The website in the demo project is mapped to local IIS. In order to make this work, you must make sure that the App Pool user has permission to access the queues involved in this sample: all queues starting with signalr.nservicebus.backplane and all queues starting with system.web.
 Also, make sure that you have configured the endpoint of the backplane in the config of your SignalR host:
 
         <configuration>
