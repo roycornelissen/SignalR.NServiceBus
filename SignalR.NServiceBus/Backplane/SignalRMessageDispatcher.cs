@@ -22,7 +22,7 @@ namespace SignalR.NServiceBus.Backplane
         public void Handle(DistributeMessages message)
         {
             var evt = new MessagesAvailable() { Payload = message.Payload, StreamIndex = message.StreamIndex, PayloadId = (ulong) Interlocked.Increment(ref _payloadId) };
-
+            Console.WriteLine("Got a message to distribute " + evt.PayloadId);
             Bus.Publish(evt);
         }
     }
