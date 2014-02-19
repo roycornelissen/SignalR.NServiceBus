@@ -7,7 +7,6 @@ using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Messaging;
 using SignalR.NServiceBus.Endpoint;
 using SignalR.NServiceBus.Messages;
-using Newtonsoft.Json;
 using NServiceBus;
 using Microsoft.AspNet.SignalR.Infrastructure;
 

@@ -1,14 +1,9 @@
 using SignalR.NServiceBus.Messages;
 using NServiceBus;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Diagnostics;
 
-namespace SignalR.NServiceBus.BackplaneService
+namespace SignalR.NServiceBus.Backplane
 {
     /// <summary>
     /// Handler that will relay the incoming message to all SignalR instances.

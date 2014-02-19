@@ -27,6 +27,7 @@ In Startup.cs:
 						.With()
 						.DefaultBuilder()
 						.UseTransport<Msmq>()
+						.UseInMemoryTimeoutPersister()
 						.UnicastBus()
 						.LoadMessageHandlers()
 						.CreateBus()
@@ -38,7 +39,18 @@ In Startup.cs:
 			}
 		}
 	
-The website in the demo project is mapped to local IIS. In order to make this work, you must make sure that the App Pool user has permission to access the queues involved in this sample: all queues starting with signalr.nservicebus.backplane and all queues starting with system.web.
+The website in the demo project is mapped to local IIS. In order to make this work, you must make sure that the App Pool user has permission to access the queues involved in this sample: all queues starting with signalr.nservicebus.backplaneservice and all queues starting with system.web:
+
+- signalr.nservicebus.backplaneservice
+- signalr.nservicebus.backplaneservice.retries
+- signalr.nservicebus.backplaneservice.timeouts
+- signalr.nservicebus.backplaneservice.timeoutdispatcher
+
+- system.web
+- system.web.retries
+- system.web.timeouts
+- system.web.timeoutdispatcher
+
 Also, make sure that you have configured the endpoint of the backplane in the config of your SignalR host:
 
         <configuration>
@@ -57,7 +69,7 @@ Also, make sure that you have configured the endpoint of the backplane in the co
           <MessageForwardingInCaseOfFaultConfig ErrorQueue="error" />
         </configuration>
 
-To run the backplane itself, just start this project (it uses the NServiceBus generic host).
+To run the backplane itself, just start the SignalR.NServiceBus.BackplaneService project (it uses the NServiceBus generic host).
 
 Author
 ======
