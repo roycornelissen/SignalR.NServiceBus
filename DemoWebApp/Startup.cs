@@ -14,12 +14,13 @@ namespace DemoWebApp
             // Any connection or hub wire up and configuration should go here
             app.MapSignalR();
 
-            // Note: to get this working, make sure that the user account your app pool runs under has access to all queues
-            // involved in this setup! That means: all signalr.nservicebus.backplane* queues and the System.Web* queues.
+            // Note: to get this working, make sure that the user account your app pool runs under has sufficient access to all queues
+            // involved in this setup! That means: all signalr.nservicebus.backplaneservice* queues and the System.Web* queues.
             Bus = Configure
                 .With()
                 .DefaultBuilder()
                 .UseTransport<Msmq>()
+                .UseInMemoryTimeoutPersister()
                 .UnicastBus()
                 .LoadMessageHandlers()
                 .CreateBus()
