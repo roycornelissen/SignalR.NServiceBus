@@ -23,8 +23,6 @@ namespace SignalR.NServiceBus
             : base(resolver, configuration)
         {
             Bus = busInstance;
-            Configure.Instance.Configurer.ConfigureComponent<Receiver>(DependencyLifecycle.InstancePerCall)
-                .ConfigureProperty((r) => r.SignalRMessageBus, this);
 
             // By default, there is only 1 stream in this NServiceBus backplane, and we'll open it here
             Open(0);
