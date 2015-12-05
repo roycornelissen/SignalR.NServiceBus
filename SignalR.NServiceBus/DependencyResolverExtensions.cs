@@ -23,6 +23,7 @@ namespace Microsoft.AspNet.SignalR
         {
             var bus = new Lazy<NServiceBusMessageBus>(() => new NServiceBusMessageBus(resolver, busInstance, configuration));
             resolver.Register(typeof(IMessageBus), () => bus.Value);
+            resolver.Register(typeof(NServiceBusMessageBus), () => bus.Value);
             return resolver;
         }
     }

@@ -1,13 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR.Messaging;
 using SignalR.NServiceBus.Messages;
-using Newtonsoft.Json;
 using NServiceBus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 
 namespace SignalR.NServiceBus.Endpoint
 {
@@ -16,15 +9,20 @@ namespace SignalR.NServiceBus.Endpoint
     /// </summary>
     public class Receiver: IHandleMessages<MessagesAvailable>
     {
-        public NServiceBusMessageBus SignalRMessageBus { get; set; }
+        private readonly NServiceBusMessageBus signalRMessageBus;
+
+        public Receiver(NServiceBusMessageBus signalRMessageBus)
+        {
+            this.signalRMessageBus = signalRMessageBus;
+        }
 
         public void Handle(MessagesAvailable message)
         {
             var messages = ScaleoutMessage.FromBytes(message.Payload);
 
-            if (SignalRMessageBus != null)
+            if (signalRMessageBus != null)
             {
-                SignalRMessageBus.OnReceived(message.StreamIndex, message.PayloadId, messages);
+                signalRMessageBus.OnReceived(message.StreamIndex, message.PayloadId, messages);
             }
         }
     }
