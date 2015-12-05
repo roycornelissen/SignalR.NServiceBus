@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNet.SignalR.Messaging;
 using SignalR.NServiceBus;
 using NServiceBus;

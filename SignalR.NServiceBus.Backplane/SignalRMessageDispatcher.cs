@@ -1,6 +1,5 @@
 using SignalR.NServiceBus.Messages;
 using NServiceBus;
-using System;
 using System.Threading;
 
 namespace SignalR.NServiceBus.Backplane
@@ -16,7 +15,7 @@ namespace SignalR.NServiceBus.Backplane
 
         public void Handle(DistributeMessages message)
         {
-            var evt = new MessagesAvailable() { Payload = message.Payload, StreamIndex = message.StreamIndex, PayloadId = (ulong) Interlocked.Increment(ref _payloadId) };
+            var evt = new MessagesAvailable { Payload = message.Payload, StreamIndex = message.StreamIndex, PayloadId = (ulong) Interlocked.Increment(ref _payloadId) };
 
             Bus.Publish(evt);
         }

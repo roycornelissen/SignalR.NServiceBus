@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.AspNet.SignalR;
+﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Messaging;
 using NServiceBus;
 using Owin;
 using SignalR.NServiceBus;
-using SignalR.NServiceBus.Endpoint;
 
 namespace DemoWebApp
 {

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Messaging;
-using SignalR.NServiceBus.Endpoint;
 using SignalR.NServiceBus.Messages;
 using NServiceBus;
-using Microsoft.AspNet.SignalR.Infrastructure;
 
 namespace SignalR.NServiceBus
 {
@@ -17,12 +12,12 @@ namespace SignalR.NServiceBus
     /// </summary>
     public class NServiceBusMessageBus : ScaleoutMessageBus
     {
-        internal static IBus Bus;
+        private static IBus _bus;
 
         public NServiceBusMessageBus(IDependencyResolver resolver, IBus busInstance, ScaleoutConfiguration configuration)
             : base(resolver, configuration)
         {
-            Bus = busInstance;
+            _bus = busInstance;
 
             // By default, there is only 1 stream in this NServiceBus backplane, and we'll open it here
             Open(0);
@@ -32,12 +27,12 @@ namespace SignalR.NServiceBus
         {
             return Task.Factory.StartNew(() =>
                 {
-                    ScaleoutMessage msg = new ScaleoutMessage(messages);
-                    Bus.Send<DistributeMessages>(m => { m.Payload = msg.ToBytes(); m.StreamIndex = streamIndex; });
+                    var msg = new ScaleoutMessage(messages);
+                    _bus.Send<DistributeMessages>(m => { m.Payload = msg.ToBytes(); m.StreamIndex = streamIndex; });
                 });
         }
 
-        new internal void OnReceived(int streamIndex, ulong id, ScaleoutMessage messages)
+        internal new void OnReceived(int streamIndex, ulong id, ScaleoutMessage messages)
         {
             base.OnReceived(streamIndex, id, messages);
         }

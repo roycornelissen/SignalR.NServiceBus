@@ -1,5 +1,4 @@
 ﻿using NServiceBus;
-using System;
 
 namespace SignalR.NServiceBus.Messages
 {
