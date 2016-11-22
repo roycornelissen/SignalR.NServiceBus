@@ -12,12 +12,12 @@ namespace SignalR.NServiceBus
     /// </summary>
     public class NServiceBusMessageBus : ScaleoutMessageBus
     {
-        private static IBus _bus;
+        private static IEndpointInstance _endpointInstance;
 
-        public NServiceBusMessageBus(IDependencyResolver resolver, IBus busInstance, ScaleoutConfiguration configuration)
+        public NServiceBusMessageBus(IDependencyResolver resolver, IEndpointInstance endpointInstance, ScaleoutConfiguration configuration)
             : base(resolver, configuration)
         {
-            _bus = busInstance;
+            _endpointInstance = endpointInstance;
 
             // By default, there is only 1 stream in this NServiceBus backplane, and we'll open it here
             Open(0);
@@ -25,11 +25,8 @@ namespace SignalR.NServiceBus
 
         protected override Task Send(int streamIndex, IList<Message> messages)
         {
-            return Task.Factory.StartNew(() =>
-                {
-                    var msg = new ScaleoutMessage(messages);
-                    _bus.Send<DistributeMessages>(m => { m.Payload = msg.ToBytes(); m.StreamIndex = streamIndex; });
-                });
+            var msg = new ScaleoutMessage(messages);
+            return _endpointInstance.Send<DistributeMessages>(m => { m.Payload = msg.ToBytes(); m.StreamIndex = streamIndex; });
         }
 
         internal new void OnReceived(int streamIndex, ulong id, ScaleoutMessage messages)

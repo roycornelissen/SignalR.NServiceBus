@@ -12,12 +12,12 @@ namespace SignalR.NServiceBus.BackplaneService
     /// </summary>
     public class EndpointConfig : IConfigureThisEndpoint
     {
-        public void Customize(BusConfiguration busConfiguration)
+        public void Customize(EndpointConfiguration cfg)
         {
-            busConfiguration.UseTransport<MsmqTransport>();
-            busConfiguration.UsePersistence<InMemoryPersistence>();
-            busConfiguration.UsePersistence<MsmqPersistence, StorageType.Subscriptions>();
-            busConfiguration.EnableInstallers();
+            cfg.UseTransport<MsmqTransport>();
+            cfg.UsePersistence<InMemoryPersistence>();
+            cfg.UsePersistence<MsmqPersistence, StorageType.Subscriptions>();
+            cfg.EnableInstallers();
         }
     }
 }

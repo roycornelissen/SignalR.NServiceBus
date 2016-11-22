@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.SignalR.Messaging;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Messaging;
 using SignalR.NServiceBus.Messages;
 using NServiceBus;
 
@@ -16,7 +17,7 @@ namespace SignalR.NServiceBus.Endpoint
             this.signalRMessageBus = signalRMessageBus;
         }
 
-        public void Handle(MessagesAvailable message)
+        public Task Handle(MessagesAvailable message, IMessageHandlerContext context)
         {
             var messages = ScaleoutMessage.FromBytes(message.Payload);
 
@@ -24,6 +25,7 @@ namespace SignalR.NServiceBus.Endpoint
             {
                 signalRMessageBus.OnReceived(message.StreamIndex, message.PayloadId, messages);
             }
+            return Task.FromResult(0);
         }
     }
 }
