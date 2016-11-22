@@ -3,7 +3,7 @@ SignalR.NServiceBus
 
 NServiceBus backplane for SignalR
 
-To use this backplane in a SignalR host, add a reference to SignalR.NServiceBus, initialize an IBus and configure SignalR to use NServiceBus. In ASP.NET, this would look something like this:
+To use this backplane in a SignalR host, add a reference to SignalR.NServiceBus, initialize an `IEndpointInstance` and configure SignalR to use NServiceBus. In ASP.NET, this would look something like this:
 
 In Startup.cs:
 
@@ -16,30 +16,30 @@ In Startup.cs:
 		{
 			public class Startup
 			{
-				public IBus Bus;
+				public IEndpointInstance _endpointInstance;
 
 				public void Configuration(IAppBuilder app)
 				{
 					// Any connection or hub wire up and configuration should go here
 					app.MapSignalR();
 
-					Bus = Configure
-						.With()
-						.DefaultBuilder()
-						.UseTransport<Msmq>()
-						.UseInMemoryTimeoutPersister()
-						.UnicastBus()
-						.LoadMessageHandlers()
-						.CreateBus()
-						.Start();
+					var cfg = new EndpointConfiguration("system.web");
+					cfg.UseTransport<MsmqTransport>();
+					cfg.UsePersistence<InMemoryPersistence>();
 
-					var config = new ScaleoutConfiguration() { MaxQueueLength = 100 }; // Or whatever you want
-					GlobalHost.DependencyResolver.UseNServiceBus(Bus, config);
+					cfg.RegisterComponents(x => x.ConfigureComponent<NServiceBusMessageBus>(() => GlobalHost.DependencyResolver.Resolve<NServiceBusMessageBus>(), DependencyLifecycle.SingleInstance));
+
+					_endpointInstance = NServiceBus.Endpoint
+						.Create(cfg).ConfigureAwait(false).GetAwaiter().GetResult()
+						.Start().ConfigureAwait(false).GetAwaiter().GetResult();
+
+					var scaleoutConfig = new ScaleoutConfiguration {MaxQueueLength = 100};// Or whatever you want
+					GlobalHost.DependencyResolver.UseNServiceBus(_endpointInstance, scaleoutConfig);
 				}
 			}
 		}
 	
-The website in the demo project is mapped to local IIS. In order to make this work, you must make sure that the App Pool user has permission to access the queues involved in this sample: all queues starting with signalr.nservicebus.backplaneservice and all queues starting with system.web:
+The website in the demo project is using IIS Express. If using IIS, you must make sure that the App Pool user has permission to access the queues involved in this sample: all queues starting with signalr.nservicebus.backplaneservice and all queues starting with system.web:
 
 - signalr.nservicebus.backplaneservice
 - signalr.nservicebus.backplaneservice.retries
